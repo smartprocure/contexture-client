@@ -4,6 +4,7 @@ import { encode, Tree } from '../util/tree'
 import { getTypeProp } from '../types'
 import wrap from './wrap'
 import { dedupeWalk } from '../node'
+import { toJS } from 'mobx'
 
 let pushOrSpliceOn = (array, item, index) => {
   if (index === undefined) array.push(item)
@@ -41,7 +42,7 @@ export default config => {
       { target, dedupe: parentDedupe }
     )
 
-    // consider moving this in the tree walk? it could work for al children too but would be exgra work for chilren
+    // consider moving this in the tree walk? it could work for al children too but would be extra work for children
     pushOrSpliceOn(target.children, node, index)
     // Need this nonsense to support the case where push actually mutates, e.g. a mobx observable tree
     // flat[encode(path)] = target.children[index]
@@ -62,10 +63,12 @@ export default config => {
 
     return dispatch({ type: 'remove', path, previous })
   }
+  let toJsIsEqual = (x, y) => _.isEqual(toJS(x), y)
 
-  let mutate = _.curry(async (path, value) => {
+  let mutate = _.curry(async (path, value, isForceUpdate = false) => {
     let target = getNode(path)
     let previous = snapshot(_.omit('children', target))
+    if (_.isMatchWith(toJsIsEqual, value, previous) && !isForceUpdate) return
     extend(target, value)
     return dispatch({
       type: 'mutate',

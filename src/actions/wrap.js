@@ -13,7 +13,7 @@ export default ({ getNode, flat }, { mutate, replace, remove, add }) => {
     // Clone the root node since we'll be modifying it in place in the tree
     let node = shallowCloneNode(getNode(path))
 
-    // Remove all children (they'll be readded at the end when we add the shallow clone)
+    // Remove all children (they'll be read at the end when we add the shallow clone)
     await Promise.all(_.map(child => remove(child.path), node.children))
 
     // Mutate existing root into new root

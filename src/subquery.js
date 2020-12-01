@@ -15,7 +15,7 @@ let mapSubqueryValuesByType = (sourceNode, targetNode, types) =>
       )(values, targetNode)
   )(sourceNode)
 
-// A subquery (in contexture-client) is about taking the output of one search and makng it the input for another search.
+// A subquery (in contexture-client) is about taking the output of one search and making it the input for another search.
 // This is an in memory, cross-database, "select in" join on sources that don't need to be relational.
 export default _.curry(
   (
@@ -51,7 +51,7 @@ export default _.curry(
       _.flow(
         mapSubqueryValues,
         // If the sourceTree has no values at all clear the targetTree, otherwise mutate with the new values.
-        // This is needed in the cases where the intial values are removed and there are no values in the source tree anymore.
+        // This is needed in the cases where the initial values are removed and there are no values in the source tree anymore.
         _.get('tree.hasValue', sourceTree)
           ? targetTree.mutate(targetPath)
           : () => targetTree.clear(targetPath)
