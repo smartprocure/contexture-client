@@ -38,6 +38,18 @@ export let initNode = _.curry((extend, types, dedupe, parentPath, node) => {
     ..._.omit(_.keys(node), getTypeProp(types, 'defaults', node)),
     key,
     path: [...parentPath, key],
+    // if node.children
+    get markedForUpdate() {
+      return _.some('markedForUpdate', node.children)
+    },
+    // if node.children
+    get updating() {
+      return _.some('updating', node.children)
+    },
+    // both cases
+    get isStale() {
+      return node.markedForUpdate || node.updating
+    },
   })
 })
 
